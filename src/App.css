@@ -229,8 +229,30 @@ html.dark-mode {
 }
 
 /* 7. RESPONSIVE */
-@media (max-width: 600px) {
-  .grid-layout.scattered { grid-template-columns: repeat(2, 1fr); }
-  .nav-links { display: none; }
-  .hero h1 { font-size: 2.2rem; }
+@media (max-width: 768px) {
+  .nav-links {
+    display: flex;
+    gap: 4px; 
+    padding: 2px;
+    background-color: var(--box-bg);
+    border-radius: 30px;
+  }
+
+  .nav-btn {
+    padding: 6px 10px; 
+    font-size: 11px; 
+    min-width: fit-content;
+  }
+
+  .navbar {
+    margin-bottom: 40px;
+  }
+
+  .avatar, .theme-toggle {
+    flex-shrink: 0;
+  }
+
+  .hero h1 {
+    font-size: 2.2rem;
+  }
 }
