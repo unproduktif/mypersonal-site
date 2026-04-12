@@ -91,7 +91,7 @@ function App() {
         ) : (
           <div className="coming-soon">
             <h2>{currentMenu} page</h2>
-            <p>working on something cool. coming soon!</p>
+            <p>coming soon!</p>
           </div>
         )}
 
