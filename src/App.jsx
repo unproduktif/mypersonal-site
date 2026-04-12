@@ -1,121 +1,103 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import myAvatar from './assets/hero.png'; 
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [currentMenu, setCurrentMenu] = useState('root');
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark-mode');
+    } else {
+      document.documentElement.classList.remove('dark-mode');
+    }
+  }, [isDarkMode]);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="main-wrapper">
+      <div className="container">
+        
+        <nav className="navbar">
+          <div className="avatar">
+            <img src={myAvatar} alt="Dodi Wijaya" />
+          </div>
 
-      <div className="ticks"></div>
+          <div className="nav-links">
+            {['root', 'story', 'setup', 'connect'].map((item) => (
+              <button 
+                key={item}
+                className={`nav-btn ${currentMenu === item ? 'active' : ''}`}
+                onClick={() => setCurrentMenu(item)}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <button className="theme-toggle" onClick={() => setIsDarkMode(!isDarkMode)}>
+            {isDarkMode ? (
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+              </svg>
+            ) : (
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+              </svg>
+            )}
+          </button>
+        </nav>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {currentMenu === 'root' ? (
+          <>
+            <header className="hero">
+              <h1>hello, i'm dodi<span className="cursor">|</span></h1>
+              <p>
+                undergrad spending way too much time staring at monitors and over-engineering simple things. documenting the 
+                unfiltered process of figuring it all out.
+              </p>
+            </header>
+
+            <section className="gallery-stack">
+              <div className="stack-card card-1">
+                <div className="video-tag">brain dump</div>
+                <video className="card-media" autoPlay muted loop playsInline>
+                  <source src="/videos/video-1.MP4" type="video/mp4" />
+                </video>
+              </div>
+              <div className="stack-card card-2">
+                <img src="/images/gallery-1.JPEG" alt="Work 1" className="card-media" />
+              </div>
+              <div className="stack-card card-3">
+                <img src="/images/gallery-2.JPEG" alt="Work 2" className="card-media" />
+              </div>
+            </section>
+
+            <div className="grid-layout scattered">
+              <div className="small-box photo-card">
+                <img src="/images/gallery-1.JPEG" alt="T1" className="card-media" />
+              </div>
+              <div className="small-box photo-card">
+                <img src="/images/IMG_1286.JPEG" alt="T2" className="card-media" />
+              </div>
+              <div className="small-box photo-card">
+                <img src="/images/IMG_7643.JPEG" alt="T3" className="card-media" />
+              </div>
+              <div className="small-box photo-card">
+                <img src="/images/IMG_8777.JPEG" alt="T4" className="card-media" />
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="coming-soon">
+            <h2>{currentMenu} page</h2>
+            <p>working on something cool. coming soon!</p>
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
