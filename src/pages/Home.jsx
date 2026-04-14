@@ -14,7 +14,15 @@ const Home = () => {
       <section className="gallery-stack">
         <div className="stack-card card-1">
           <div className="video-tag">brain dump</div>
-          <video className="card-media" autoPlay muted loop playsInline>
+          <video 
+            className="card-media" 
+            autoPlay 
+            muted 
+            loop 
+            playsInline 
+            preload="metadata"
+          >
+            <source src="/videos/video-1.webm" type="video/webm" />
             <source src="/videos/video-1.MP4" type="video/mp4" />
           </video>
         </div>
