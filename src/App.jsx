@@ -6,7 +6,6 @@ import myAvatar from './assets/hero.png';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
-import Story from './pages/Story';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
