@@ -38,12 +38,12 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     
-    if (!data.items) {
+    if (!data.items || data.items.length === 0) {
       return res.status(200).json({ tracks: [] });
     }
 
     const tracks = data.items.map((item) => {
-      const track = item.track;
+      const track = item.track; 
       return {
         id: track.id,
         title: track.name,
@@ -53,11 +53,12 @@ export default async function handler(req, res) {
 
     const uniqueTracks = tracks.filter((track, index, self) =>
       index === self.findIndex((t) => t.id === track.id)
-    ).slice(0, 4);
+    ).slice(0, 5);
 
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     return res.status(200).json({ tracks: uniqueTracks });
   } catch (error) {
+    console.error("Recently Played Backend Error:", error);
     return res.status(500).json({ error: 'Failed to fetch recently played' });
   }
 }
