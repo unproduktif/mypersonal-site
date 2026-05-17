@@ -38,6 +38,10 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     
+    if (!data.items) {
+      return res.status(200).json({ tracks: [] });
+    }
+
     const tracks = data.items.map((item) => {
       const track = item.track;
       return {
@@ -46,7 +50,7 @@ export default async function handler(req, res) {
         artist: track.artists.map((_artist) => _artist.name).join(', '),
         albumImageUrl: track.album.images[0].url,
         songUrl: track.external_urls.spotify,
-        previewUrl: track.preview_url,
+        previewUrl: track.preview_url || '#',
         duration: msToMinutesAndSeconds(track.duration_ms)
       };
     });
@@ -58,6 +62,7 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
     return res.status(200).json({ tracks: uniqueTracks });
   } catch (error) {
+    console.error("Backend Error:", error);
     return res.status(500).json({ error: 'Failed to fetch recently played' });
   }
 }
