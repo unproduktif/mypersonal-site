@@ -44,6 +44,7 @@ export default async function handler(req, res) {
       artist: track.artists.map((_artist) => _artist.name).join(', '),
       albumImageUrl: track.album.images[0].url,
       songUrl: track.external_urls.spotify,
+      previewUrl: track.preview_url,
       duration: msToMinutesAndSeconds(track.duration_ms)
     }));
 

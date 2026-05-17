@@ -38,14 +38,18 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     
-    const tracks = data.items.map((item) => ({
-      id: item.track.id,
-      title: item.track.name,
-      artist: item.track.artists.map((_artist) => _artist.name).join(', '),
-      albumImageUrl: item.track.album.images[0].url,
-      songUrl: item.track.external_urls.spotify,
-      duration: msToMinutesAndSeconds(item.track.duration_ms)
-    }));
+    const tracks = data.items.map((item) => {
+      const track = item.track;
+      return {
+        id: track.id,
+        title: track.name,
+        artist: track.artists.map((_artist) => _artist.name).join(', '),
+        albumImageUrl: track.album.images[0].url,
+        songUrl: track.external_urls.spotify,
+        previewUrl: track.preview_url,
+        duration: msToMinutesAndSeconds(track.duration_ms)
+      };
+    });
 
     const uniqueTracks = tracks.filter((track, index, self) =>
       index === self.findIndex((t) => t.id === track.id)

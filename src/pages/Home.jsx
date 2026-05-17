@@ -79,7 +79,7 @@ const Home = () => {
       <section className="spotify-dashboard">
         <div className="dashboard-header">
           <h2 className="section-title">
-            {activeTab === 'recently' ? 'on loop' : 'staring tracklist'}
+            {activeTab === 'recently' ? 'on loop.' : 'staring tracklist.'}
           </h2>
           
           <div className="tab-switcher">
@@ -99,6 +99,7 @@ const Home = () => {
         </div>
 
         <div className="bento-grid">
+          {/* CARD KIRI */}
           <div className="featured-card">
             {featuredTrack ? (
               <>
@@ -132,31 +133,40 @@ const Home = () => {
                   
                   <div className="player-simulation">
                     <div className="progress-bar">
-                      <div className="progress-fill" style={{width: '30%'}}></div>
+                      {/* Progress Fill mengikuti status playing */}
+                      <div className={`progress-fill ${playingTrackId === featuredTrack.id ? 'animating' : ''}`}></div>
                     </div>
                     <div className="time-stamps">
-                      <span>00:15</span>
+                      <span>00:00</span>
                       <span>{featuredTrack.duration}</span>
                     </div>
                   </div>
                 </div>
 
-                <button className="big-play-btn">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="#000000">
-                    <path d="M8 5v14l11-7z"/>
-                  </svg>
+                <button 
+                  className="big-play-btn"
+                  onClick={() => handlePlayPreview(featuredTrack.previewUrl, featuredTrack.id)}
+                >
+                  {playingTrackId === featuredTrack.id ? (
+                    // Icon Pause
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="#000"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                  ) : (
+                    // Icon Play
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="#000"><path d="M8 5v14l11-7z"/></svg>
+                  )}
                 </button>
               </>
             ) : (
               <div className="card-empty-state">
-                <p>crickets</p>
+                <p>crickets.</p>
               </div>
             )}
           </div>
 
+          {/* CARD KANAN */}
           <div className="tracks-list-container">
             {isLoading ? (
-              [...Array(4)].map((_, idx) => (
+              [...Array(5)].map((_, idx) => (
                 <div key={idx} className="skeleton-row-card">
                   <div className="skeleton-thumb"></div>
                   <div className="skeleton-info">
@@ -171,33 +181,32 @@ const Home = () => {
               </div>
             ) : (
               displayedTracks.map((track, index) => (
-                <a 
-                  href={track.songUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <div 
                   key={track.id || index} 
                   className={`list-track-card row-bg-${(index % 4) + 1}`}
                 >
                   <img src={track.albumImageUrl} alt={track.title} className="list-album-thumb" />
-                  <div className="list-track-info">
+                  <div className="list-track-info" onClick={() => window.open(track.songUrl, "_blank")}>
                     <h4>{track.title}</h4>
                     <p>{track.artist}</p>
                   </div>
                   
                   <div className="list-track-controls">
-                    <div className="small-progress-bar">
-                      <div className="small-progress-fill" style={{width: '20%'}}></div>
-                    </div>
                     <span className="track-duration-text">{track.duration}</span>
                     <button className="list-action-icon-btn"><span className="plus-text">+</span></button>
                     <button className="list-action-icon-btn-dots">•••</button>
-                    <button className="small-play-btn">
-                      <svg viewBox="0 0 24 24" width="10" height="10" fill="#000000">
-                        <path d="M8 5v14l11-7z"/>
-                      </svg>
+                    <button 
+                      className="small-play-btn"
+                      onClick={() => handlePlayPreview(track.previewUrl, track.id)}
+                    >
+                      {playingTrackId === track.id ? (
+                        <svg viewBox="0 0 24 24" width="10" height="10" fill="#000"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24" width="10" height="10" fill="#000"><path d="M8 5v14l11-7z"/></svg>
+                      )}
                     </button>
                   </div>
-                </a>
+                </div>
               ))
             )}
           </div>
