@@ -7,7 +7,7 @@ const refresh_token = process.env.SPOTIFY_REFRESH_TOKEN;
 const basic = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
 const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`;
 
-const TOP_TRACKS_ENDPOINT = `https://api.spotify.com/v1/me/top/tracks?limit=4&time_range=short_term?limit=5`;
+const TOP_TRACKS_ENDPOINT = `https://api.spotify.com/v1/me/top/tracks?limit=5`;
 
 const getAccessToken = async () => {
   const response = await fetch(TOKEN_ENDPOINT, {
