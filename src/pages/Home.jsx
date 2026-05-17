@@ -32,7 +32,7 @@ const Home = () => {
   }, [activeTab]);
 
   const featuredTrack = displayedTracks[0];
-  const listTracks = displayedTracks.slice(0, 5);
+  const listTracks = displayedTracks.slice(1, 5);
 
   return (
     <>
