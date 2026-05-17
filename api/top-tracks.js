@@ -6,7 +6,8 @@ const refresh_token = process.env.SPOTIFY_REFRESH_TOKEN;
 
 const basic = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
 const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`;
-const TOP_TRACKS_ENDPOINT = `https://api.spotify.com/v1/me/top/tracks?limit=4&time_range=short_term`;
+
+const TOP_TRACKS_ENDPOINT = `https://api.spotify.com/v1/me/top/tracks?limit=4&time_range=short_term?limit=5`;
 
 const getAccessToken = async () => {
   const response = await fetch(TOKEN_ENDPOINT, {
@@ -38,7 +39,11 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     
-    const tracks = data.items.slice(0, 5).map((track) => ({
+    if (!data.items || data.items.length === 0) {
+      return res.status(200).json({ tracks: [] });
+    }
+    
+    const tracks = data.items.map((track) => ({
       id: track.id,
       title: track.name,
       artist: track.artists.map((_artist) => _artist.name).join(', ')
@@ -47,6 +52,7 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     return res.status(200).json({ tracks });
   } catch (error) {
+    console.error("Top Tracks Backend Error:", error);
     return res.status(500).json({ error: 'Failed to fetch top tracks' });
   }
 }
