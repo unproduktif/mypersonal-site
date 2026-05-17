@@ -6,7 +6,7 @@ const refresh_token = process.env.SPOTIFY_REFRESH_TOKEN;
 
 const basic = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
 const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`;
-const RECENTLY_PLAYED_ENDPOINT = `http://googleusercontent.com/spotify.com/4`;
+const RECENTLY_PLAYED_ENDPOINT = `https://accounts.spotify.com/authorize?client_id=CLIENT_ID_MU&response_type=code&redirect_uri=https://google.com&scope=user-read-currently-playing%20user-read-playback-state%20user-read-recently-played%20user-top-read`;
 
 const getAccessToken = async () => {
   const response = await fetch(TOKEN_ENDPOINT, {

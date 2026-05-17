@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
 const Home = () => {
-  const [activeTab, setActiveTab] = useState('recently');
-  const [displayedTracks, setDisplayedTracks] = useState([]);
+  const [activeTab, setActiveTab] = useState('recently'); 
+  const [displayedTracks, setDisplayedTracks] = useState([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [featuredTrack, setFeaturedTrack] = useState(null);
-
+  
+  // State Audio Player Preview
   const [currentAudio, setCurrentAudio] = useState(null);
   const [playingTrackId, setPlayingTrackId] = useState(null);
 
+  // useEffect untuk Fetch Data & Handle Cleanup Audio saat tab pindah
   useEffect(() => {
     const fetchSpotifyData = async () => {
       setIsLoading(true);
@@ -36,10 +38,45 @@ const Home = () => {
     };
 
     fetchSpotifyData();
+
+    // Cleanup function instan biar audio mati pas tab berganti
+    return () => {
+      if (currentAudio) {
+        currentAudio.pause();
+      }
+    };
   }, [activeTab]);
+
+  // Fungsi memutar audio preview
+  const handlePlayPreview = (previewUrl, trackId) => {
+    if (!previewUrl || previewUrl === '#') {
+      alert("Spotify tidak menyediakan audio preview untuk lagu ini via API.");
+      return;
+    }
+
+    if (playingTrackId === trackId) {
+      currentAudio.pause();
+      setPlayingTrackId(null);
+      setCurrentAudio(null);
+    } else {
+      if (currentAudio) currentAudio.pause();
+      
+      const audio = new Audio(previewUrl);
+      audio.play();
+      setCurrentAudio(audio);
+      setPlayingTrackId(trackId);
+
+      // Reset state pas lagu berdurasi 30 detik selesai
+      audio.onended = () => {
+        setPlayingTrackId(null);
+        setCurrentAudio(null);
+      };
+    }
+  };
 
   return (
     <>
+      {/* --- HERO SECTION --- */}
       <header className="hero">
         <h1>hello, i'm dodi<span className="cursor">|</span></h1>
         <p>
@@ -48,6 +85,7 @@ const Home = () => {
         </p>
       </header>
 
+      {/* --- GALLERY SECTION --- */}
       <section className="gallery-stack">
         <div className="stack-card card-1">
           <div className="video-tag">brain dump</div>
@@ -79,6 +117,7 @@ const Home = () => {
         </div>
       </div>
 
+      {/* --- SPOTIFY DASHBOARD SECTION --- */}
       <section className="spotify-dashboard">
         <div className="dashboard-header">
           <h2 className="section-title">
@@ -102,7 +141,7 @@ const Home = () => {
         </div>
 
         <div className="bento-grid">
-          {/* CARD KIRI */}
+          {/* CARD KIRI: FEATURED COMPONENT */}
           <div className="featured-card">
             {featuredTrack ? (
               <>
@@ -136,7 +175,6 @@ const Home = () => {
                   
                   <div className="player-simulation">
                     <div className="progress-bar">
-                      {/* Progress Fill mengikuti status playing */}
                       <div className={`progress-fill ${playingTrackId === featuredTrack.id ? 'animating' : ''}`}></div>
                     </div>
                     <div className="time-stamps">
@@ -151,10 +189,8 @@ const Home = () => {
                   onClick={() => handlePlayPreview(featuredTrack.previewUrl, featuredTrack.id)}
                 >
                   {playingTrackId === featuredTrack.id ? (
-                    // Icon Pause
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="#000"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                   ) : (
-                    // Icon Play
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="#000"><path d="M8 5v14l11-7z"/></svg>
                   )}
                 </button>
@@ -166,7 +202,7 @@ const Home = () => {
             )}
           </div>
 
-          {/* CARD KANAN */}
+          {/* CARD KANAN: LIST ROW TRACKS */}
           <div className="tracks-list-container">
             {isLoading ? (
               [...Array(5)].map((_, idx) => (
@@ -180,7 +216,7 @@ const Home = () => {
               ))
             ) : displayedTracks.length === 0 ? (
               <div className="empty-list-state">
-                <p>empty queue. go wake up my spotify.</p>
+                <p>empty queue. wake up my spotify.</p>
               </div>
             ) : (
               displayedTracks.map((track, index) => (
