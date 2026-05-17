@@ -32,10 +32,7 @@ const Home = () => {
   }, [activeTab]);
 
   const featuredTrack = displayedTracks[0];
-  
-  const listTracks = displayedTracks.length <= 4 
-    ? displayedTracks.slice(1) 
-    : displayedTracks.slice(1, 5);
+  const listTracks = displayedTracks.slice(1, 5);
 
   return (
     <>
@@ -119,8 +116,7 @@ const Home = () => {
               <div className="featured-embed-card">
                 {featuredTrack && (
                   <iframe
-                    /* PERBAIKAN: Ditambahkan tanda $ sebelum kurung kurawal */
-                    src={`https://open.spotify.com/embed/track/$${featuredTrack.id}?utm_source=generator&theme=0`}
+                    src={`https://open.spotify.com/embed/track/${featuredTrack.id}?utm_source=generator&theme=0`}
                     width="100%"
                     height="352"
                     frameBorder="0"
@@ -136,8 +132,7 @@ const Home = () => {
                 {listTracks.map((track, index) => (
                   <div key={track.id || index} className="spotify-player-wrapper">
                     <iframe
-                      /* PERBAIKAN: Ditambahkan tanda $ sebelum kurung kurawal */
-                      src={`https://open.spotify.com/embed/track/$${track.id}?utm_source=generator&theme=0`}
+                      src={`https://open.spotify.com/embed/track/${track.id}?utm_source=generator&theme=0`}
                       width="100%"
                       height="80"
                       frameBorder="0"
