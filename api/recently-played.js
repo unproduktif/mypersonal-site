@@ -6,7 +6,7 @@ const refresh_token = process.env.SPOTIFY_REFRESH_TOKEN;
 
 const basic = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
 const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`;
-const RECENTLY_PLAYED_ENDPOINT = `https://accounts.spotify.com/authorize?client_id=CLIENT_ID_MU&response_type=code&redirect_uri=https://google.com&scope=user-read-currently-playing%20user-read-playback-state%20user-read-recently-played%20user-top-read`;
+const RECENTLY_PLAYED_ENDPOINT = `https://api.spotify.com/v1/me/player/recently-played?limit=5`;
 
 const getAccessToken = async () => {
   const response = await fetch(TOKEN_ENDPOINT, {
@@ -47,28 +47,17 @@ export default async function handler(req, res) {
       return {
         id: track.id,
         title: track.name,
-        artist: track.artists.map((_artist) => _artist.name).join(', '),
-        albumImageUrl: track.album.images[0].url,
-        songUrl: track.external_urls.spotify,
-        previewUrl: track.preview_url || '#',
-        duration: msToMinutesAndSeconds(track.duration_ms)
+        artist: track.artists.map((_artist) => _artist.name).join(', ')
       };
     });
 
     const uniqueTracks = tracks.filter((track, index, self) =>
       index === self.findIndex((t) => t.id === track.id)
-    ).slice(0, 5);
+    ).slice(0, 4);
 
-    res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     return res.status(200).json({ tracks: uniqueTracks });
   } catch (error) {
-    console.error("Backend Error:", error);
     return res.status(500).json({ error: 'Failed to fetch recently played' });
   }
-}
-
-function msToMinutesAndSeconds(ms) {
-  const minutes = Math.floor(ms / 60000);
-  const seconds = ((ms % 60000) / 1000).toFixed(0);
-  return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 }
