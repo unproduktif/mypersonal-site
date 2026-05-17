@@ -1,6 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Home = () => {
+  const [activeTab, setActiveTab] = useState('recently');
+  const [displayedTracks, setDisplayedTracks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [featuredTrack, setFeaturedTrack] = useState(null);
+
+  useEffect(() => {
+    const fetchSpotifyData = async () => {
+      setIsLoading(true);
+      try {
+        const endpoint = activeTab === 'top-tracks' ? '/api/top-tracks' : '/api/recently-played';
+        const response = await fetch(endpoint);
+        
+        if (response.status === 200) {
+          const data = await response.json();
+          if (data.tracks && data.tracks.length > 0) {
+            setDisplayedTracks(data.tracks);
+            setFeaturedTrack(data.tracks[0]);
+          } else {
+            setDisplayedTracks([]);
+            setFeaturedTrack(null);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching Spotify data:", error);
+        setDisplayedTracks([]);
+        setFeaturedTrack(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSpotifyData();
+  }, [activeTab]);
+
   return (
     <>
       <header className="hero">
@@ -14,14 +48,7 @@ const Home = () => {
       <section className="gallery-stack">
         <div className="stack-card card-1">
           <div className="video-tag">brain dump</div>
-          <video 
-            className="card-media" 
-            autoPlay 
-            muted 
-            loop 
-            playsInline 
-            preload="metadata"
-          >
+          <video className="card-media" autoPlay muted loop playsInline preload="metadata">
             <source src="/videos/video-1.webm" type="video/webm" />
             <source src="/videos/video-1.MP4" type="video/mp4" />
           </video>
@@ -48,6 +75,134 @@ const Home = () => {
           <img src="/images/IMG_8777.JPEG" alt="T4" className="card-media" />
         </div>
       </div>
+
+      <section className="spotify-dashboard">
+        <div className="dashboard-header">
+          <h2 className="section-title">
+            {activeTab === 'recently' ? 'on loop' : 'staring tracklist'}
+          </h2>
+          
+          <div className="tab-switcher">
+            <button 
+              className={`tab-btn ${activeTab === 'recently' ? 'active' : ''}`}
+              onClick={() => setActiveTab('recently')}
+            >
+              Recently Played
+            </button>
+            <button 
+              className={`tab-btn ${activeTab === 'top-tracks' ? 'active' : ''}`}
+              onClick={() => setActiveTab('top-tracks')}
+            >
+              Top Tracks
+            </button>
+          </div>
+        </div>
+
+        <div className="bento-grid">
+          <div className="featured-card">
+            {featuredTrack ? (
+              <>
+                <div className="card-header-icon">
+                  <svg viewBox="0 0 24 24" width="20" height="20">
+                    <path fill="rgba(255,255,255,0.4)" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424c-.18.295-.565.387-.86.207-2.377-1.454-5.37-1.783-8.894-.982-.336.074-.67-.14-.744-.477-.074-.336.14-.67.477-.744 3.856-.88 7.15-.505 9.814 1.127.295.18.387.563.207.86zm1.224-2.72c-.226.367-.707.487-1.074.26-2.72-1.672-6.87-2.157-10.082-1.182-.413.125-.847-.107-.972-.52-.125-.413.107-.847.52-.972 3.676-1.116 8.244-.575 11.35 1.336.366.226.486.706.258 1.074zm.105-2.834C14.383 8.8 8.44 8.604 5.004 9.647c-.534.163-1.097-.137-1.26-.67-.163-.535.137-1.098.67-1.26 3.945-1.197 10.514-.97 14.593 1.45.482.285.64.904.354 1.386-.285.48-.903.64-1.385.355z"/>
+                  </svg>
+                </div>
+                
+                <div className="album-wrapper">
+                  <img src={featuredTrack.albumImageUrl} alt={featuredTrack.title} className="featured-album-img" />
+                </div>
+
+                <div className="featured-meta">
+                  <span className="badge-text">
+                    {activeTab === 'top-tracks' ? '#1 Track This Month' : 'Last Played'}
+                  </span>
+                  <div className="track-info-main">
+                    <h3 className="featured-title">{featuredTrack.title}</h3>
+                    <p className="featured-artist">{featuredTrack.artist}</p>
+                  </div>
+                  
+                  <div className="featured-actions">
+                    <a href={featuredTrack.songUrl} target="_blank" rel="noopener noreferrer" className="btn-save-spotify">
+                      + Save to Spotify
+                    </a>
+                    <button className="action-circle-btn">+</button>
+                    <button className="action-circle-btn">➔</button>
+                    <button className="action-circle-btn">•••</button>
+                  </div>
+                  
+                  <div className="player-simulation">
+                    <div className="progress-bar">
+                      <div className="progress-fill" style={{width: '30%'}}></div>
+                    </div>
+                    <div className="time-stamps">
+                      <span>00:15</span>
+                      <span>{featuredTrack.duration}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <button className="big-play-btn">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="#000000">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </button>
+              </>
+            ) : (
+              <div className="card-empty-state">
+                <p>crickets</p>
+              </div>
+            )}
+          </div>
+
+          <div className="tracks-list-container">
+            {isLoading ? (
+              [...Array(4)].map((_, idx) => (
+                <div key={idx} className="skeleton-row-card">
+                  <div className="skeleton-thumb"></div>
+                  <div className="skeleton-info">
+                    <div className="skeleton-line line-short"></div>
+                    <div className="skeleton-line line-long"></div>
+                  </div>
+                </div>
+              ))
+            ) : displayedTracks.length === 0 ? (
+              <div className="empty-list-state">
+                <p>empty queue. go wake up my spotify.</p>
+              </div>
+            ) : (
+              displayedTracks.map((track, index) => (
+                <a 
+                  href={track.songUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  key={track.id || index} 
+                  className={`list-track-card row-bg-${(index % 4) + 1}`}
+                >
+                  <img src={track.albumImageUrl} alt={track.title} className="list-album-thumb" />
+                  <div className="list-track-info">
+                    <h4>{track.title}</h4>
+                    <p>{track.artist}</p>
+                  </div>
+                  
+                  <div className="list-track-controls">
+                    <div className="small-progress-bar">
+                      <div className="small-progress-fill" style={{width: '20%'}}></div>
+                    </div>
+                    <span className="track-duration-text">{track.duration}</span>
+                    <button className="list-action-icon-btn"><span className="plus-text">+</span></button>
+                    <button className="list-action-icon-btn-dots">•••</button>
+                    <button className="small-play-btn">
+                      <svg viewBox="0 0 24 24" width="10" height="10" fill="#000000">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </button>
+                  </div>
+                </a>
+              ))
+            )}
+          </div>
+        </div>
+      </section>
     </>
   );
 };
