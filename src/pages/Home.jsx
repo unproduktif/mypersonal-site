@@ -6,6 +6,9 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [featuredTrack, setFeaturedTrack] = useState(null);
 
+  const [currentAudio, setCurrentAudio] = useState(null);
+  const [playingTrackId, setPlayingTrackId] = useState(null);
+
   useEffect(() => {
     const fetchSpotifyData = async () => {
       setIsLoading(true);
