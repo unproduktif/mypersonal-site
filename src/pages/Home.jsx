@@ -31,13 +31,11 @@ const Home = () => {
     fetchSpotifyData();
   }, [activeTab]);
 
-  // Memisahkan lagu utama (paling baru/paling top) dan sisa list-nya
   const featuredTrack = displayedTracks[0];
-  const listTracks = displayedTracks.slice(1, 5); // Mengambil 4 lagu berikutnya untuk sisi kanan
+  const listTracks = displayedTracks.slice(0, 5);
 
   return (
     <>
-      {/* --- HERO SECTION --- */}
       <header className="hero">
         <h1>hello, i'm dodi<span className="cursor">|</span></h1>
         <p>
@@ -46,7 +44,6 @@ const Home = () => {
         </p>
       </header>
 
-      {/* --- GALLERY SECTION --- */}
       <section className="gallery-stack">
         <div className="stack-card card-1">
           <div className="video-tag">brain dump</div>
@@ -78,7 +75,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* --- SPOTIFY BENTO EMBED DASHBOARD --- */}
       <section className="spotify-dashboard">
         <div className="dashboard-header">
           <h2 className="section-title">
@@ -103,7 +99,6 @@ const Home = () => {
 
         <div className="bento-grid">
           {isLoading ? (
-            // Skeleton Loader State saat Loading Data
             <>
               <div className="skeleton-embed-card big-skeleton"></div>
               <div className="tracks-list-container">
@@ -118,7 +113,6 @@ const Home = () => {
             </div>
           ) : (
             <>
-              {/* COMPONENT KIRI: CARD UTAMA BESAR */}
               <div className="featured-embed-card">
                 {featuredTrack && (
                   <iframe
@@ -126,6 +120,7 @@ const Home = () => {
                     width="100%"
                     height="352"
                     frameBorder="0"
+                    scrolling="no"
                     allowFullScreen=""
                     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                     loading="lazy"
@@ -133,7 +128,6 @@ const Home = () => {
                 )}
               </div>
 
-              {/* COMPONENT KANAN: LIST BARIS LAGU LAINNYA */}
               <div className="tracks-list-container">
                 {listTracks.map((track, index) => (
                   <div key={track.id || index} className="spotify-player-wrapper">
