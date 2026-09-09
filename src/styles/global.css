@@ -8,15 +8,15 @@
   --bg-color: #ffffff;
   --text-main: #0a0a0a;
   --text-muted: #6b7280;
-  --box-bg: #f4f4f5;
-  --nav-active: #e4e4e7;
+  --box-bg: #edeef1;
+  --nav-active: #dfe0e4;
   --transition-speed: 0.3s;
 
-  --border-soft: rgba(0, 0, 0, 0.09);
-  --border-strong: rgba(0, 0, 0, 0.28);
-  --glow: rgba(0, 0, 0, 0.05);
+  --border-soft: rgba(0, 0, 0, 0.11);
+  --border-strong: rgba(0, 0, 0, 0.35);
+  --glow: rgba(0, 0, 0, 0.07);
   --contrast: #ffffff;
-  --shadow-color: rgba(0, 0, 0, 0.12);
+  --shadow-color: rgba(0, 0, 0, 0.18);
 }
 
 html.dark-mode {
