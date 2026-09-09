@@ -12,15 +12,42 @@ async function getJson(url) {
   return res.json();
 }
 
-export default async function handler(req, res) {
-  const debug = req.query && req.query.debug === '1';
+async function fetchLatestVideo(uploadsPlaylistId) {
+  if (!uploadsPlaylistId) return null;
 
-  if (!API_KEY || !CHANNEL_ID) {
-    return res.status(200).json(
-      debug
-        ? { ...EMPTY, debug: { hasApiKey: !!API_KEY, hasChannelId: !!CHANNEL_ID, channelId: CHANNEL_ID || null } }
-        : EMPTY
+  try {
+    const playlistData = await getJson(
+      `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=1&key=${API_KEY}`
     );
+    const latestItem = playlistData.items && playlistData.items[0];
+    if (!latestItem) return null;
+
+    const videoId = latestItem.snippet.resourceId.videoId;
+    const videoData = await getJson(
+      `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoId}&key=${API_KEY}`
+    );
+    const videoStats = videoData.items && videoData.items[0]?.statistics;
+
+    return {
+      id: videoId,
+      title: latestItem.snippet.title,
+      thumbnail:
+        latestItem.snippet.thumbnails?.medium?.url ||
+        latestItem.snippet.thumbnails?.default?.url ||
+        null,
+      publishedAt: latestItem.snippet.publishedAt,
+      viewCount: Number(videoStats?.viewCount || 0),
+    };
+  } catch (error) {
+    // No uploads yet, or the playlist isn't accessible — channel stats are still valid without it.
+    console.error('YouTube latest video fetch failed:', error.message);
+    return null;
+  }
+}
+
+export default async function handler(req, res) {
+  if (!API_KEY || !CHANNEL_ID) {
+    return res.status(200).json(EMPTY);
   }
 
   try {
@@ -40,41 +67,12 @@ export default async function handler(req, res) {
       videoCount: Number(channelItem.statistics.videoCount || 0),
     };
 
-    const uploadsPlaylistId = channelItem.contentDetails?.relatedPlaylists?.uploads;
-    let latestVideo = null;
-
-    if (uploadsPlaylistId) {
-      const playlistData = await getJson(
-        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=1&key=${API_KEY}`
-      );
-      const latestItem = playlistData.items && playlistData.items[0];
-
-      if (latestItem) {
-        const videoId = latestItem.snippet.resourceId.videoId;
-        const videoData = await getJson(
-          `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoId}&key=${API_KEY}`
-        );
-        const videoStats = videoData.items && videoData.items[0]?.statistics;
-
-        latestVideo = {
-          id: videoId,
-          title: latestItem.snippet.title,
-          thumbnail:
-            latestItem.snippet.thumbnails?.medium?.url ||
-            latestItem.snippet.thumbnails?.default?.url ||
-            null,
-          publishedAt: latestItem.snippet.publishedAt,
-          viewCount: Number(videoStats?.viewCount || 0),
-        };
-      }
-    }
+    const latestVideo = await fetchLatestVideo(channelItem.contentDetails?.relatedPlaylists?.uploads);
 
     res.setHeader('Cache-Control', 'public, s-maxage=1800, stale-while-revalidate=3600');
     return res.status(200).json({ channel, latestVideo });
   } catch (error) {
-    console.error('YouTube stats error:', error);
-    return res.status(200).json(
-      debug ? { ...EMPTY, debug: { message: error.message, channelId: CHANNEL_ID } } : EMPTY
-    );
+    console.error('YouTube stats error:', error.message);
+    return res.status(200).json(EMPTY);
   }
 }
