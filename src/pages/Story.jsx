@@ -29,6 +29,7 @@ const experience = [
     ],
     certificate: 'Sertifikat Asisten Praktikum Pengolahan Citra Digital — Semester Genap 2025/2026',
     certificateFile: '/certificates/digital-image-processing.pdf',
+    certificatePreview: '/certificates/thumbs/digital-image-processing.png',
     skills: ['Digital Image Processing', 'Image Processing'],
     extraSkills: 3,
   },
@@ -47,6 +48,7 @@ const experience = [
     ],
     certificate: 'Sertifikat Asisten Praktikum Sistem Basis Data — Semester Ganjil 2025/2026',
     certificateFile: '/certificates/database-systems.pdf',
+    certificatePreview: '/certificates/thumbs/database-systems.png',
     skills: ['SQL', 'Database Management System (DBMS)'],
     extraSkills: 3,
   },
@@ -65,6 +67,7 @@ const experience = [
     ],
     certificate: 'Sertifikat Asisten Praktikum Algoritma dan Struktur Data — Semester Ganjil 2025/2026',
     certificateFile: '/certificates/algorithms-data-structures.pdf',
+    certificatePreview: '/certificates/thumbs/algorithms-data-structures.png',
     skills: ['Algorithms', 'Data Structures'],
     extraSkills: 4,
   },
@@ -83,6 +86,7 @@ const experience = [
     ],
     certificate: 'Certificate of Appreciation – Digital Systems Practicum Assistant, Semester Ganjil 2024/2025',
     certificateFile: '/certificates/digital-systems.pdf',
+    certificatePreview: '/certificates/thumbs/digital-systems.png',
     skills: ['Problem Solving', 'Teaching'],
     extraSkills: 2,
   },
@@ -195,17 +199,21 @@ const Story = () => {
                             rel="noopener noreferrer"
                             className="exp-certificate-link"
                           >
-                            {!exp.certificateFile.toLowerCase().endsWith('.pdf') && (
-                              <img
-                                src={exp.certificateFile}
-                                alt={exp.certificate}
-                                className="exp-certificate-thumb"
-                              />
+                            {(exp.certificatePreview || !exp.certificateFile.toLowerCase().endsWith('.pdf')) && (
+                              <div className="exp-certificate-preview-wrap">
+                                <img
+                                  src={exp.certificatePreview || exp.certificateFile}
+                                  alt={exp.certificate}
+                                  className="exp-certificate-preview"
+                                />
+                              </div>
                             )}
-                            <span className="exp-certificate-name">{exp.certificate}</span>
-                            <span className="exp-certificate-view">
-                              view{exp.certificateFile.toLowerCase().endsWith('.pdf') ? ' pdf' : ''} ↗
-                            </span>
+                            <div className="exp-certificate-footer">
+                              <span className="exp-certificate-name">{exp.certificate}</span>
+                              <span className="exp-certificate-view">
+                                view{exp.certificateFile.toLowerCase().endsWith('.pdf') ? ' pdf' : ''} ↗
+                              </span>
+                            </div>
                           </a>
                         ) : (
                           <span className="exp-certificate-text">{exp.certificate}</span>
