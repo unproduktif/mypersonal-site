@@ -28,7 +28,7 @@ const experience = [
       'Created and evaluated practical assessment questions to assess students’ understanding of digital image processing concepts.',
     ],
     certificate: 'Sertifikat Asisten Praktikum Pengolahan Citra Digital — Semester Genap 2025/2026',
-    certificateImage: null,
+    certificateFile: '/certificates/digital-image-processing.pdf',
     skills: ['Digital Image Processing', 'Image Processing'],
     extraSkills: 3,
   },
@@ -46,7 +46,7 @@ const experience = [
       'Created and evaluated practical assessment questions to assess students’ understanding of database concepts and SQL.',
     ],
     certificate: 'Sertifikat Asisten Praktikum Sistem Basis Data — Semester Ganjil 2025/2026',
-    certificateImage: null,
+    certificateFile: '/certificates/database-systems.pdf',
     skills: ['SQL', 'Database Management System (DBMS)'],
     extraSkills: 3,
   },
@@ -64,7 +64,7 @@ const experience = [
       'Created and evaluated practical assessment questions to assess students’ programming and problem-solving skills.',
     ],
     certificate: 'Sertifikat Asisten Praktikum Algoritma dan Struktur Data — Semester Ganjil 2025/2026',
-    certificateImage: null,
+    certificateFile: '/certificates/algorithms-data-structures.pdf',
     skills: ['Algorithms', 'Data Structures'],
     extraSkills: 4,
   },
@@ -82,7 +82,7 @@ const experience = [
       'Evaluated students’ practical work and provided feedback to support their learning outcomes.',
     ],
     certificate: 'Certificate of Appreciation – Digital Systems Practicum Assistant, Semester Ganjil 2024/2025',
-    certificateImage: null,
+    certificateFile: '/certificates/digital-systems.pdf',
     skills: ['Problem Solving', 'Teaching'],
     extraSkills: 2,
   },
@@ -188,19 +188,24 @@ const Story = () => {
                     {exp.certificate && (
                       <div className="exp-certificate">
                         <span className="exp-certificate-label">certificate</span>
-                        {exp.certificateImage ? (
+                        {exp.certificateFile ? (
                           <a
-                            href={exp.certificateImage}
+                            href={exp.certificateFile}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="exp-certificate-link"
                           >
-                            <img
-                              src={exp.certificateImage}
-                              alt={exp.certificate}
-                              className="exp-certificate-thumb"
-                            />
-                            <span>{exp.certificate}</span>
+                            {!exp.certificateFile.toLowerCase().endsWith('.pdf') && (
+                              <img
+                                src={exp.certificateFile}
+                                alt={exp.certificate}
+                                className="exp-certificate-thumb"
+                              />
+                            )}
+                            <span className="exp-certificate-name">{exp.certificate}</span>
+                            <span className="exp-certificate-view">
+                              view{exp.certificateFile.toLowerCase().endsWith('.pdf') ? ' pdf' : ''} ↗
+                            </span>
                           </a>
                         ) : (
                           <span className="exp-certificate-text">{exp.certificate}</span>
