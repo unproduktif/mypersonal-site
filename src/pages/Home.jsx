@@ -196,6 +196,18 @@ const Home = () => {
           </div>
         ) : (
           <div className="yt-layout">
+            <a
+              className="yt-channel-row"
+              href="https://youtube.com/@_dodiwijaya"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {ytChannel.thumbnail && (
+                <img src={ytChannel.thumbnail} alt={ytChannel.title} className="yt-channel-avatar" />
+              )}
+              <span className="yt-channel-name">{ytChannel.title}</span>
+            </a>
+
             {ytVideo && (
               <a
                 className="yt-video-card"

@@ -3,11 +3,13 @@ import Reveal from '../components/Reveal';
 
 const GITHUB_USERNAME = 'unproduktif';
 
+// add a `photo` path (e.g. '/images/hobbies/badminton.jpg') to show a picture instead of a plain tile
 const hobbies = [
-  { icon: '🤿', name: 'diving & snorkeling' },
-  { icon: '🥾', name: 'hiking' },
-  { icon: '🎬', name: 'content creation (aspiring)' },
-  { icon: '💻', name: 'side-project ngoprek' },
+  { name: 'diving & snorkeling', photo: null },
+  { name: 'hiking', photo: null },
+  { name: 'badminton', photo: null },
+  { name: 'content creation (aspiring)', photo: null },
+  { name: 'side-project ngoprek', photo: null },
 ];
 
 // edit this list as your work/organizational experience grows
@@ -26,6 +28,7 @@ const experience = [
       'Created and evaluated practical assessment questions to assess students’ understanding of digital image processing concepts.',
     ],
     certificate: 'Sertifikat Asisten Praktikum Pengolahan Citra Digital — Semester Genap 2025/2026',
+    certificateImage: null,
     skills: ['Digital Image Processing', 'Image Processing'],
     extraSkills: 3,
   },
@@ -43,6 +46,7 @@ const experience = [
       'Created and evaluated practical assessment questions to assess students’ understanding of database concepts and SQL.',
     ],
     certificate: 'Sertifikat Asisten Praktikum Sistem Basis Data — Semester Ganjil 2025/2026',
+    certificateImage: null,
     skills: ['SQL', 'Database Management System (DBMS)'],
     extraSkills: 3,
   },
@@ -60,6 +64,7 @@ const experience = [
       'Created and evaluated practical assessment questions to assess students’ programming and problem-solving skills.',
     ],
     certificate: 'Sertifikat Asisten Praktikum Algoritma dan Struktur Data — Semester Ganjil 2025/2026',
+    certificateImage: null,
     skills: ['Algorithms', 'Data Structures'],
     extraSkills: 4,
   },
@@ -77,6 +82,7 @@ const experience = [
       'Evaluated students’ practical work and provided feedback to support their learning outcomes.',
     ],
     certificate: 'Certificate of Appreciation – Digital Systems Practicum Assistant, Semester Ganjil 2024/2025',
+    certificateImage: null,
     skills: ['Problem Solving', 'Teaching'],
     extraSkills: 2,
   },
@@ -132,8 +138,17 @@ const Story = () => {
         <div className="section-label">hobbies</div>
         <div className="hobby-grid">
           {hobbies.map((hobby, index) => (
-            <Reveal key={hobby.name} as="div" className="hobby-card" delay={index * 70}>
-              <span className="hobby-icon">{hobby.icon}</span>
+            <Reveal
+              key={hobby.name}
+              as="div"
+              className={`hobby-card ${hobby.photo ? 'has-photo' : ''}`}
+              delay={index * 70}
+            >
+              {hobby.photo && (
+                <div className="hobby-photo-wrap">
+                  <img src={hobby.photo} alt={hobby.name} className="hobby-photo" />
+                </div>
+              )}
               <span className="hobby-name">{hobby.name}</span>
             </Reveal>
           ))}
@@ -172,7 +187,24 @@ const Story = () => {
 
                     {exp.certificate && (
                       <div className="exp-certificate">
-                        🎓 <span>{exp.certificate}</span>
+                        <span className="exp-certificate-label">certificate</span>
+                        {exp.certificateImage ? (
+                          <a
+                            href={exp.certificateImage}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="exp-certificate-link"
+                          >
+                            <img
+                              src={exp.certificateImage}
+                              alt={exp.certificate}
+                              className="exp-certificate-thumb"
+                            />
+                            <span>{exp.certificate}</span>
+                          </a>
+                        ) : (
+                          <span className="exp-certificate-text">{exp.certificate}</span>
+                        )}
                       </div>
                     )}
 

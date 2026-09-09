@@ -1,27 +1,10 @@
 import React from 'react';
 import Reveal from '../components/Reveal';
 
-const Setup = () => {
-    const setups = [
-        {
-            category: "gear",
-            items: [
-                { 
-                  name: "Laptop Stand Aluminium", 
-                  desc: "Essential for ergonomic coding sessions", 
-                  link: "https://www.tiktok.com/",
-                  image: "images/setup/mouse.jpg"
-                },
-                { 
-                  name: "Logitech M240", 
-                  desc: "Silent and reliable Bluetooth mouse for daily productivity", 
-                  link: "#", 
-                  image: "images/setup/mouse.jpg"
-                },
-            ]
-        }
-    ];
+// empty for now — add real gear here as { name, desc, link, image } objects
+const setups = [];
 
+const Setup = () => {
 return (
     <>
       <header className="hero">
@@ -33,29 +16,35 @@ return (
       </header>
 
       <section className="setup-list">
-        {setups.map((group, index) => (
-          <Reveal key={index} className="setup-group" delay={index * 100}>
-            <h2 className="setup-category">{group.category}</h2>
-            <div className="setup-grid">
-              {group.items.map((item, i) => (
-                <a key={i} href={item.link} target="_blank" rel="noopener noreferrer" className="setup-item-card">
-                  <div className="setup-content-wrapper">
-                    {item.image && (
-                      <div className="setup-image-container">
-                        <img src={item.image} alt={item.name} className="setup-img" />
+        {setups.length === 0 ? (
+          <div className="empty-list-state">
+            <p>still curating this list.</p>
+          </div>
+        ) : (
+          setups.map((group, index) => (
+            <Reveal key={index} className="setup-group" delay={index * 100}>
+              <h2 className="setup-category">{group.category}</h2>
+              <div className="setup-grid">
+                {group.items.map((item, i) => (
+                  <a key={i} href={item.link} target="_blank" rel="noopener noreferrer" className="setup-item-card">
+                    <div className="setup-content-wrapper">
+                      {item.image && (
+                        <div className="setup-image-container">
+                          <img src={item.image} alt={item.name} className="setup-img" />
+                        </div>
+                      )}
+                      <div className="setup-info">
+                        <span className="item-name">{item.name}</span>
+                        <span className="item-desc">{item.desc}</span>
                       </div>
-                    )}
-                    <div className="setup-info">
-                      <span className="item-name">{item.name}</span>
-                      <span className="item-desc">{item.desc}</span>
                     </div>
-                  </div>
-                  <div className="setup-arrow">↗</div>
-                </a>
-              ))}
-            </div>
-          </Reveal>
-        ))}
+                    <div className="setup-arrow">↗</div>
+                  </a>
+                ))}
+              </div>
+            </Reveal>
+          ))
+        )}
       </section>
     </>
   );
