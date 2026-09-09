@@ -5,13 +5,22 @@ const EMPTY = { channel: null, latestVideo: null };
 
 async function getJson(url) {
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`YouTube API error: ${res.status}`);
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`YouTube API error: ${res.status} ${body}`);
+  }
   return res.json();
 }
 
 export default async function handler(req, res) {
+  const debug = req.query && req.query.debug === '1';
+
   if (!API_KEY || !CHANNEL_ID) {
-    return res.status(200).json(EMPTY);
+    return res.status(200).json(
+      debug
+        ? { ...EMPTY, debug: { hasApiKey: !!API_KEY, hasChannelId: !!CHANNEL_ID, channelId: CHANNEL_ID || null } }
+        : EMPTY
+    );
   }
 
   try {
@@ -64,6 +73,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ channel, latestVideo });
   } catch (error) {
     console.error('YouTube stats error:', error);
-    return res.status(200).json(EMPTY);
+    return res.status(200).json(
+      debug ? { ...EMPTY, debug: { message: error.message, channelId: CHANNEL_ID } } : EMPTY
+    );
   }
 }
