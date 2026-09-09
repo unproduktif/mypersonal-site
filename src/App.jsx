@@ -6,7 +6,9 @@ import myAvatar from './assets/hero.png';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
-// import Setup from './pages/Setup';
+import Story from './pages/Story';
+import Setup from './pages/Setup';
+import Connect from './pages/Connect';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -21,6 +23,12 @@ function App() {
     switch(currentMenu) {
       case 'root':
         return <Home />;
+      case 'story':
+        return <Story />;
+      case 'setup':
+        return <Setup />;
+      case 'connect':
+        return <Connect />;
       default:
         return (
           <div className="coming-soon">
@@ -45,7 +53,9 @@ function App() {
         </header>
         
         <main className="main-content">
-          {renderContent()}
+          <div className="page-transition" key={currentMenu}>
+            {renderContent()}
+          </div>
         </main>
 
         <Footer />

@@ -1,4 +1,5 @@
 import React from 'react';
+import Reveal from '../components/Reveal';
 
 const Setup = () => {
     const setups = [
@@ -33,7 +34,7 @@ return (
 
       <section className="setup-list">
         {setups.map((group, index) => (
-          <div key={index} className="setup-group">
+          <Reveal key={index} className="setup-group" delay={index * 100}>
             <h2 className="setup-category">{group.category}</h2>
             <div className="setup-grid">
               {group.items.map((item, i) => (
@@ -53,7 +54,7 @@ return (
                 </a>
               ))}
             </div>
-          </div>
+          </Reveal>
         ))}
       </section>
     </>
